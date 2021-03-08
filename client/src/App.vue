@@ -3,20 +3,17 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/login" v-if="!user">Login</router-link> |
     <router-link to="/about">About</router-link>
-    <fa-icon icon="power-off" />
+    <fa-icon icon="power-off" v-if="user" />
   </div>
   <router-view/>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'App',
 
-  computed: {
-    user () {
-      return this.$store.state.user
-    }
-  }
+  computed: mapState(['user'])
 }
 </script>
 

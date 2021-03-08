@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit="tryLogin">
+    <form @submit.prevent="tryLogin">
       <p>
         <label for="login">Login :</label>
         <input type="tel" v-model="login" id="login" placeholder="thorgal">
@@ -28,8 +28,7 @@ export default {
   },
 
   methods: {
-    tryLogin ($event) {
-      $event.preventDefault()
+    tryLogin () {
       const login = this.login
       const password = this.password
       this.$store.dispatch('login', { login, password })
