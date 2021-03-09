@@ -1,4 +1,10 @@
 const express = require('express')
+const tokenUtils = require('./utils/token.js')
+
+require('dotenv').config()
+
+console.log(process.env.TOKEN_SECRET)
+
 const app = express()
 const port = 3000
 
@@ -15,10 +21,19 @@ app.get('/api/v1/version', (req, res) => {
 })
 
 app.post('/api/v1/auth/token', (req, res) => {
-  console.log(req.body)
+  const body = req.body || {}
+  const { login, password } = body
+
+  if (!login || !password) {
+    res.status(401).json({
+      success: false,
+      message: 'Login and password are required'
+    })
+    return
+  }
 
   // Vérifier ici que les identifiants sont valides
-  const isValidCredentials = req.body.login === stan.login && req.body.password === stan.password // 
+  const isValidCredentials = login === stan.login && password === stan.password // 
 
   if (!isValidCredentials) {
     res.status(401).json({
@@ -28,10 +43,43 @@ app.post('/api/v1/auth/token', (req, res) => {
     return
   }
 
+  const payload = {
+    login,
+  }
+
+  const token = tokenUtils.createToken(payload)
   res.status(201).json({
     success: true,
-    user: stan
+    user: { 
+      ...stan,
+      password: undefined
+    },
+    token
   })
+})
+
+app.get('/api/v1/me', (req, res) => {
+  const token = req.headers.authorization.replace('Bearer ', '')
+
+  try {
+    const payload = tokenUtils.checkToken(token)
+    const login = payload.login
+    // Chercher et trouver l'utilisateur correspondant à ce login
+    // TODO: à faire avec mongodb
+    console.log({ payload })
+    res.json({
+      success: true,
+      user: {
+        ...stan,
+        password: undefined
+      }
+    })
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: 'Token invalide'
+    })
+  }
 })
   
 app.listen(port, () => {
