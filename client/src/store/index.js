@@ -9,6 +9,10 @@ export default createStore({
   mutations: {
     setUser (state, user) {
       state.user = user
+    },
+
+    resetUser (state) {
+      state.user = undefined
     }
   },
 
@@ -26,6 +30,11 @@ export default createStore({
           localStorage.setItem('token', token)
           commit('setUser', user)
         })
+    },
+
+    logout ({ commit }) {
+      localStorage.removeItem('token')
+      commit('resetUser')
     },
 
     checkToken ({ commit }) {
