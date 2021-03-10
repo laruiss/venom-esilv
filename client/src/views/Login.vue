@@ -12,6 +12,9 @@
       <p>
         <input type="submit" value="Se connecter">
       </p>
+      Next: {{ $route.query.next }}
+      <br>
+      Query: {{ JSON.stringify($route.query) }}
     </form>
   </div>
 </template>

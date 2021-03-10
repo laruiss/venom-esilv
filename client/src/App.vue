@@ -13,11 +13,7 @@ import { mapState } from 'vuex'
 export default {
   name: 'App',
 
-  computed: mapState(['user']),
-
-  mounted () {
-    this.$store.dispatch('checkToken')
-  }
+  computed: mapState(['user'])
 }
 </script>
 

@@ -5,18 +5,21 @@ export default createStore({
   state: {
     user: undefined
   },
+
   mutations: {
     setUser (state, user) {
       state.user = user
     }
   },
+
   actions: {
     login ({ commit }, credentials) {
       api.login(credentials)
         .then(data => {
-          const { success, user, token, message } = data // équivaut aux 3 lignes précédentes
+          const { success, user, token, message } = data
           if (!success) {
-            // afficher le message contenu dans `message`
+            // TODO: Afficher proprement le message contenu dans `message` dans l'interface
+            //       et non dans la console comme ici
             console.error(message)
             return
           }
@@ -24,26 +27,29 @@ export default createStore({
           commit('setUser', user)
         })
     },
+
     checkToken ({ commit }) {
       const token = localStorage.getItem('token')
       if (!token) {
         return
       }
 
-      api.checkToken(token)
+      return api.checkToken(token)
         .then(data => {
           const { success, message, user } = data
 
           if (!success) {
             // Afficher le message d'erreur à l'utilisateur
             console.warn(message)
-            return
+            return false
           }
 
           commit('setUser', user)
+          return true
         })
     }
   },
+
   modules: {
   }
 })

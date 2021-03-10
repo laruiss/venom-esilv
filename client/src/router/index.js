@@ -1,6 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+import { checkTokenBeforeEnter } from './router-utils'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import Crypto from '../views/Crypto.vue'
+import Profile from '../views/Profile.vue'
 
 const routes = [
   {
@@ -12,6 +16,18 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/crypto',
+    name: 'Crypto',
+    component: Crypto,
+    beforeEnter: checkTokenBeforeEnter
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    beforeEnter: checkTokenBeforeEnter
   },
   {
     path: '/about',
