@@ -1,7 +1,13 @@
-const express = require('express')
-const tokenUtils = require('./utils/token.js')
+import express from 'express'
 
-require('dotenv').config()
+import { createToken, checkToken } from './utils/token.js'
+import { getConnection } from './connect.js'
+
+import { createUser } from './models/user-queries.js'
+
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 console.log(process.env.TOKEN_SECRET)
 
@@ -20,6 +26,27 @@ app.get('/api/v1/version', (req, res) => {
   res.json('1.0.0')
 })
 
+app.post('/api/v1/user', (req, res) => {
+  const firstname = req.body.firstname
+  const lastname = req.body.lastname
+  const login = req.body.login
+  const email = req.body.email
+  const password = req.body.password
+
+  createUser({
+    firstname,
+    lastname,
+    login,
+    email,
+    password
+  }).then(user => {
+    res.status(201).json({
+      success: true,
+      user
+    })
+  })
+})
+
 app.post('/api/v1/auth/token', (req, res) => {
   const body = req.body || {}
   const { login, password } = body
@@ -33,7 +60,7 @@ app.post('/api/v1/auth/token', (req, res) => {
   }
 
   // Vérifier ici que les identifiants sont valides
-  const isValidCredentials = login === stan.login && password === stan.password // 
+  const isValidCredentials = login === stan.login && password === stan.password //
 
   if (!isValidCredentials) {
     res.status(401).json({
@@ -44,13 +71,13 @@ app.post('/api/v1/auth/token', (req, res) => {
   }
 
   const payload = {
-    login,
+    login
   }
 
-  const token = tokenUtils.createToken(payload)
+  const token = createToken(payload)
   res.status(201).json({
     success: true,
-    user: { 
+    user: {
       ...stan,
       password: undefined
     },
@@ -67,7 +94,7 @@ app.get('/api/v1/me', (req, res) => {
     .header('Pragma', 'no-cache')
 
   try {
-    const payload = tokenUtils.checkToken(token)
+    const payload = checkToken(token)
     // const login = payload.login
     // Chercher et trouver l'utilisateur correspondant à ce login
     // TODO: à faire avec mongodb
@@ -88,6 +115,11 @@ app.get('/api/v1/me', (req, res) => {
   }
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+getConnection()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Example app listening at http://localhost:${port}`)
+    })
+  }).catch(error => {
+    console.error(error)
+  })
