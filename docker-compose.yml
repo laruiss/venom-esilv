@@ -2,6 +2,19 @@ version: '3.5'
 
 services:
 
+  api:
+    image: venom_api:latest
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: venom_api
+    depends_on:
+      - mongo
+    ports:
+      - 3000:3000
+    environment:
+      MONGO_URL: mongodb://venom:venom@mongo:27017/venom
+
   mongo:
     image: mongo
     restart: always
