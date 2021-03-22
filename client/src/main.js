@@ -5,8 +5,10 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-createApp(App)
+const app = createApp(App)
   .use(store)
   .use(router)
   .component('fa-icon', FontAwesomeIcon)
+
+app
   .mount('#app')

@@ -9,8 +9,6 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-console.log(process.env.TOKEN_SECRET)
-
 const app = express()
 const port = 3000
 
@@ -20,6 +18,7 @@ const stan = {
   password: 'stan'
 }
 
+app.use(express.static('dist'))
 app.use(express.json())
 app.use(express.static('static'))
 
