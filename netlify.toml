@@ -1,0 +1,13 @@
+[build]
+  # Dossier dans lequel se placer avant le build
+  # C'est-à-dire celui avec le package.json du client
+  base = "client/"
+
+  # Dossier qui contient les fichiers html, CSS, JS, et autres assets (images, sons, vidéos,...)
+  publish = "dist/"
+
+  # Variables d'environment pour le build
+  environment = { VUE_APP_API_HOST = "https://venom-esilv.herokuapp.com" }
+
+  # Default build command.
+  command = "npm run build"
